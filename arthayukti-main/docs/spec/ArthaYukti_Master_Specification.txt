@@ -1,0 +1,1022 @@
+ARTHAYUKTI — MASTER IMPLEMENTATION-SPECIFICATION GENERATION PROMPT
+Version: 1.0 Purpose: Use this prompt together with the attached
+reference PDF, problem statement PDF, and any other project files to
+generate a complete, internally consistent implementation specification
+for an AI-assisted coding IDE.
+
+======================================================================
+0. ROLE, OBJECTIVE, AND NON-NEGOTIABLE INSTRUCTIONS
+======================================================================
+
+Act as a principal software architect, senior full-stack engineer,
+financial-systems designer, database architect, quantitative
+financial-model engineer, security engineer, and product designer
+working together on ArthaYukti.
+
+Your task is to study the attached project problem statement and the
+attached document titled approximately: “Personal Finance Management
+Application — Product & Data Model” and then produce a complete,
+detailed, implementation-ready specification for ArthaYukti.
+
+The reference PDF is a source of existing product/data-model
+requirements. Read it carefully. Preserve its terminology, coverage, and
+useful fields. Do not silently discard its models for stocks, mutual
+funds, equity categories, liabilities, debt investments, insurance,
+market data, metrics, or security/privacy. Extend the reference where
+the requirements below demand it, but clearly distinguish: (A)
+requirements taken from the attached files, (B) decisions explicitly
+agreed in this prompt, (C) technical recommendations you make, (D)
+assumptions that still require confirmation.
+
+Do not claim a feature exists in a reference file if it does not. Do not
+ignore the project problem statement. Map the architecture and MVP back
+to the actual problem statement.
+
+The final output must be suitable for an AI coding IDE to implement
+from. It must specify behavior, entities, relationships, validations,
+formulas, edge cases, API responsibilities, acceptance criteria, and
+implementation order. Avoid vague statements such as “handle taxes
+correctly” without specifying the rule engine boundary, inputs, outputs,
+and test cases.
+
+Do not merely write a product brochure or a high-level architecture
+overview. Write an engineering specification.
+
+Do not ask the user a long list of questions. The user has delegated
+remaining technical decisions to you. Make sensible, explainable
+decisions for implementation details. If an unresolved ambiguity would
+fundamentally change the product or make a financial calculation unsafe,
+flag it explicitly and choose a conservative disclosed behavior.
+
+Do not implement connected bank, brokerage, or other personal
+financial-account integrations. ArthaYukti uses manual entry and
+CSV/XLSX imports only for user financial data. Public market-data APIs
+and optional external research are allowed and are not personal-account
+connections.
+
+The product is for Indian users and uses INR as the primary currency.
+Design data structures to support other currencies for international
+assets where appropriate. Never fabricate API endpoints, tax rules,
+market data, source licences, or current legal rules. For current Indian
+tax/legal details, use a research process only when the user enables
+external research, cite authoritative sources, record effective dates
+and financial years, and keep the calculation engine deterministic and
+versioned.
+
+====================================================================== 1.
+PRODUCT VISION AND PROBLEM TO SOLVE
+======================================================================
+
+ArthaYukti is a serious personal-finance planning and multi-goal
+financial decision-support application. It is not merely an expense
+tracker, investment dashboard, or chatbot.
+
+The central problem is: what happens when a household does not have
+enough money to achieve every financial goal on time? The application
+must use the user’s complete financial picture to calculate which goals
+can be achieved, which goals are delayed or underfunded, what changes
+could improve feasibility, and how alternative assumptions change the
+outcome.
+
+Users can enter income, expenditure, financial goals, assets,
+investments, debts, insurance, household profile information,
+assumptions, and future events. The engine projects finances over time
+and explains trade-offs. It must not double-count money or make
+lower-priority goals appear feasible by silently violating
+higher-priority commitments.
+
+Core product promise: - Show the current financial position and future
+trajectory. - Estimate whether goals can be achieved under explicit
+assumptions. - Explain shortfalls and trade-offs. - Allow users to test
+changes in independent scenarios. - Use AI to analyse the complete
+relevant financial context, explain results, and propose options. - Keep
+authoritative financial calculations in deterministic, testable code,
+not in the language model.
+
+======================================================================
+2. NEW REQUIREMENT: HOUSEHOLD PROFILE, LIFE STAGE, AND RISK CAPACITY
+======================================================================
+
+The user profile must include structured information about age,
+household composition, dependants, future family commitments, and
+household income. Gemini must consider these factors together with all
+financial data when analysing risk capacity and making suggestions
+relative to goals.
+
+Create a dedicated Household Profile / Life Context section. Do not
+assume every user has the same family structure. The profile must
+support user-selected answers and explicit “prefer not to say” or
+“unknown” states where appropriate. Do not infer family members,
+dependants, or children from names, transactions, or other sensitive
+signals.
+
+Suggested schema and UX fields: - User date of birth or age; prefer date
+of birth stored securely and derive age as of the projection date. If
+only age is supplied, record age, reference date, and whether it is
+approximate. - Household arrangement / living situation only if useful
+to the financial model and voluntarily provided. - Parent commitments:
+whether the user financially supports or expects to support parents; use
+Yes / No / Unsure, with optional expected monthly/annual support,
+current health/medical-support budget if user chooses to provide it,
+start date, expected duration or review date, and notes. Do not require
+health details to use the feature. - Children: whether the user
+currently has children; if yes, number of children and optional age/date
+of birth per child, financial responsibility, education-related goals
+and expected timing. - Future children: whether the user expects or
+plans children in the next 10 years; if yes, allow the user to enter an
+expected number and approximate expected year/range for each planned
+child. The user explicitly requested “if yes, how many in the next 10
+years.” Treat these as uncertain plans, not confirmed facts. Let the
+user add, edit, disable, or mark as uncertain. Do not assume a planned
+child will necessarily exist; use only in the scenario/assumption chosen
+by the user. - Other dependants / family members financially supported:
+count, relationship category, expected support amount, start/end date or
+recurrence, and optional notes. Avoid unnecessary personally identifying
+details. - Household income: model all income sources in the Income
+module. Provide a clear household total based on selected included
+income sources, with individual income amount, frequency, start date,
+optional end date, growth schedule, reliability/variability and source
+category. Do not create a separate family-member-management system;
+income sources can be entered independently. A spouse/partner
+contribution, if applicable, can be represented as another income
+source. The household profile can record high-level context, while
+detailed income sources remain in the Income module. - Household
+financial commitments: optional expected family events/expenses,
+recurring support, education costs, medical support, caregiving, and
+other planned obligations. Represent actual expected amounts and dates
+as cash-flow events/expense schedules rather than vague profile text
+alone. - Profile completeness and provenance: user-entered, imported,
+inferred-by-user-confirmation, last-updated time, and whether
+assumptions are confirmed or uncertain.
+
+Risk analysis: - Distinguish risk tolerance, risk capacity, and risk
+need. Do not collapse them into one “risk score.” - Risk capacity means
+the financial ability to withstand losses or income shocks without
+jeopardizing essential spending, mandatory payments, emergency reserves,
+dependants, and high-priority goals. - Risk tolerance is the user’s
+willingness to accept volatility, gathered separately and only if the
+product includes it. - Risk need is the return/risk level that might be
+needed to reach goals; do not use it to justify unrealistic or
+unsuitable recommendations. - Gemini should analyse age/life stage,
+parents/dependants, existing and planned children, household income
+sources and reliability, essential expenses, emergency-fund coverage,
+debts and EMIs, insurance, investment liquidity/concentration, goal
+priorities and deadlines, future family commitments, and scenario
+sensitivity. - The deterministic engine should calculate relevant
+quantitative indicators (e.g. months of essential expenditure covered,
+debt-payment burden, income concentration if enough data, projected
+cash-flow surplus/deficit, shortfall under adverse scenarios, liquidity
+available for goals). Gemini interprets these indicators and explains
+trade-offs. - Do not let Gemini assign a definitive risk capacity using
+opaque intuition. Provide a transparent framework, factors,
+thresholds/configuration, evidence and caveats. Label qualitative
+assessments as estimates. - A suggestion to increase investment risk
+must be checked against the household’s risk capacity, emergency
+reserve, liquidity needs, debt obligations, time horizon and goal
+priority. Higher expected returns must never be presented as
+guaranteed. - Future family plans must be scenario-based. A planned
+child, possible caregiving cost, or uncertain income event should not
+automatically be treated as confirmed fact in the base plan. Show base
+and alternative scenarios where useful. - Respect privacy: only provide
+Gemini the relevant structured summary necessary for analysis. Do not
+send unnecessary identifiers or raw sensitive data. Tell the user what
+information is used for a risk-capacity analysis.
+
+======================================================================
+3. SOURCE-OF-TRUTH AND ARCHITECTURE PRINCIPLES
+======================================================================
+
+Use a modular architecture with clearly separated responsibilities: 1.
+Frontend/UI: onboarding, data entry, dashboard, module pages,
+trajectories, charts, scenario tabs, import review, profile and reports.
+2. Backend/API: authentication/authorization, validation, business
+workflows, CRUD, audit trail, import staging, scenario management and
+calculation requests. 3. Deterministic financial engine: event-dated
+monthly projections, balances, investment growth, taxes, debt schedules,
+goal allocation, liquidity and trajectory calculations. 4. Data layer:
+normalized records, transaction ledger, scenario assumptions, external
+market snapshots, calculation runs, audit history. 5. AI orchestration
+layer: Gemini for contextual analysis, explanation, categorization
+proposals, scenario ideas and optional research. Gemini does not
+authoritatively calculate balances, taxes, returns, or goal feasibility.
+6. External-data adapters: stock-market data, mutual-fund NAV sources,
+and optional external research. These do not connect to personal
+accounts.
+
+Prefer modular interfaces and independently testable services. Do not
+over-engineer distributed services for a 30-hour hackathon. A modular
+monolith is a reasonable default unless the actual stack/project context
+strongly argues otherwise. Choose a practical stack compatible with the
+existing project repository if one exists; inspect it before proposing
+replacements. If no stack exists, select a stack that is quick to build,
+maintainable, and testable, and explain the choice.
+
+Every projection must be reproducible from: - base financial record
+version/snapshot, - selected scenario, - calculation-engine version, -
+tax-rule configuration version and effective financial year, - market
+data snapshot and timestamps where relevant, - projection start date,
+end date and time-step, - all assumptions and user overrides. Store
+enough metadata to explain why a result changed.
+
+Use one shared, chronological household projection engine for the full
+household trajectory and goal feasibility. Dedicated investment-only,
+debt-only, expenditure-only, and custom trajectories may filter or
+specialize the same canonical data/calculation outputs, but must not use
+inconsistent formulas.
+
+======================================================================
+4. CORE FINANCIAL RULES ALREADY AGREED
+======================================================================
+
+4.1 Goal priorities There are five ordered priority tiers: 1.
+Non-negotiable 2. Very high 3. High 4. Not essential 5. Least essential
+
+Within each tier, the user ranks individual goals. Allocate available
+goal funding strictly in that ordered priority sequence, not
+proportionally. Do not silently use money twice or fund lower-priority
+goals while pretending a higher-priority goal has been satisfied.
+
+Before discretionary goal funding, protect essential household expenses
+and legally/contractually required payments. Emergency-fund
+contributions follow the user’s selected plan while accounting for
+immediate liquidity and mandatory obligations. Clearly show the
+hierarchy and any user-configured exceptions.
+
+If a high-priority goal is infeasible, say so plainly. Test alternatives
+such as higher contributions, reduced expenditure, later deadline, lower
+target, changed savings schedule, changes to lower-priority goals, or
+alternative return assumptions. Recalculate each alternative. Classify
+goals as feasible, feasible with adjustments, or currently unrealistic
+under the tested assumptions. Never recommend a higher expected return
+as if guaranteed.
+
+4.2 Goal inflation User enters a goal amount, reason, deadline, priority
+tier and within-tier order. Apply 5% annual goal inflation by default:
+inflated target = entered target * (1.05 ^ number_of_years_to_goal) Show
+the entered amount and inflation-adjusted amount. Let the user choose
+which amount is the actual target used in the plan. Retain the original
+amount, calculated amount, chosen amount, inflation assumption, date
+basis and calculation timestamp. Clearly state whether the input
+represents today’s money or a future nominal amount to avoid applying
+inflation twice. Choose and document a consistent time convention
+(e.g. exact date difference converted to fractional years or full-year
+periods) and test it.
+
+4.3 Expenditure inflation The user controls expenditure assumptions
+independently of goal inflation. Allow: - expenses remain constant, -
+one user-entered annual growth rate, - custom growth schedules by
+period, - category-specific growth assumptions. Do not silently apply a
+default expenditure inflation rate without disclosure. If a setup
+default is required, explicitly label it and let the user choose/edit it
+before a projection is treated as complete.
+
+4.4 Income growth Each income source can have optional growth schedules.
+If no growth is specified, hold the income amount constant for the
+projection and disclose this assumption. Support variable frequency,
+effective dates, optional end dates and irregular/variable income where
+practical.
+
+4.5 Emergency fund Default target is 12 months of expenditure, editable
+by the user. The expenditure categories included in the baseline must be
+explicit/configurable and documented. Track current emergency savings
+separately from the target, projected contributions, shortfall and
+expected completion date. Users may allocate eligible existing assets to
+emergency reserves. Do not double-count allocated assets in net worth or
+goal funding. Classify reserves by accessibility: - immediately
+accessible cash/bank balances, - accessible with settlement time, -
+restricted or costly-to-withdraw assets (e.g. FD with penalty or
+lock-in). Show target, allocated amount, immediately accessible amount,
+total eligible reserves, shortfall and completion estimate.
+
+4.6 Physical assets Allow land/property and gold to be recorded as
+assets. The user can specify if property is their residence; the user’s
+chosen planning semantics treat the residence as not liquid. For other
+property and gold, ask whether the user would sell it: Yes / No / Maybe.
+“No” excludes it from available goal funding. “Maybe” excludes it from
+committed base funding but can be evaluated in a separate scenario.
+“Yes” can be considered available after estimated sale timing, costs,
+applicable tax and secured liabilities are accounted for. Owned assets
+remain part of net worth even when unavailable for goal funding.
+
+4.7 Investments and expected returns Users enter expected annual returns
+for each investment or relevant holding; do not silently assign generic
+return assumptions. Contractual instrument terms override generic
+assumptions where applicable. Keep estimated future returns separate
+from actual observed performance. Support return schedules with multiple
+date ranges per investment per scenario. Default rate change applies to
+the entire holding from the effective date forward, including previously
+invested money. Advanced users may model different assumptions for
+existing holdings versus new contributions. Use chronological
+compounding and clearly specify annual-to-periodic conversion and
+day-count convention. No expected return is guaranteed.
+
+4.8 SIP step-ups Support optional multi-step SIP schedules,
+e.g. ₹20,000/month initially, ₹25,000/month from a specified date,
+₹30,000/month later. Current amount applies until next schedule change
+or SIP end date. Use the same schedule consistently in investment
+trajectory, full household trajectory and goal feasibility. Distinguish
+planned contribution from affordable contribution. Show yearly
+contributions, cumulative invested amount, projected value, returns and
+applicable taxes.
+
+4.9 Multiple scenarios and tabs Users can create multiple named scenario
+tabs, e.g. Baseline, Conservative, Optimistic or custom names. Each
+scenario has independent assumptions and dated future events, including
+investment return schedules, income changes, job loss, bonuses, medical
+expenses, new loans, large purchases, investment gains/losses and
+family-planning assumptions. Underlying financial records are shared;
+scenario assumptions/events are isolated. Editing one scenario must not
+mutate other scenarios. Support comparison of goal feasibility, net
+worth, cash flow, debt-free dates, investment value and completion
+dates. Save assumptions and calculation-run metadata so old comparisons
+can be reproduced. User can compare scenarios side by side.
+
+4.10 Taxes Tax rules must be explicit, versioned, auditable and
+effective-date-aware. Research current Indian rules only when the user
+enables external research. Use credible sources, record
+URL/title/publisher/retrieval date/effective dates/financial year and
+uncertainty. The AI may research or extract candidate rules, but
+deterministic code applies validated rules. Support tax configuration
+per relevant instrument and event; show pre-tax and post-tax projected
+values where meaningful. Model tax when it affects cash flow: recurring
+taxable income when applicable, taxable sale/redemption with acquisition
+lots, cost basis and holding period where relevant, maturity tax on
+taxable components, and post-tax proceeds reinvested only after tax
+payment. Do not apply a simplistic flat rate to all asset classes.
+Provide tax-base/type and instrument-specific logic (e.g. capital gains,
+interest income, taxable maturity component, withholding/TDS, other
+applicable base). Allow manual override with audit trail and disclose
+estimates. Tax outputs are estimates, not tax/legal advice. Never imply
+legal certainty where data/rules are incomplete. If exact rules cannot
+be validated, clearly label the tax result as provisional and show the
+missing data/assumptions. Include a rule-engine interface, not
+hard-coded tax logic spread across modules.
+
+4.11 Market data Use public market-data APIs only; no personal account
+connections. Use a market-data adapter so providers can be changed. A
+candidate user-proposed repository is
+https://github.com/0xramm/Indian-Stock-Market-API; verify its current
+endpoint docs, terms/licence, reliability and upstream data limitations
+before use. Do not claim a licence if none is stated. Refresh prices on
+portfolio open when cache is stale and provide manual refresh. Cache
+results and avoid continuous streaming. Record instrument ID, exchange,
+price, currency, source, market-data timestamp, retrieval timestamp and
+stale/failure status. Preserve last known price if refresh fails and
+visibly mark it stale. Stock APIs may cover supported stock/ETF quotes
+and history; mutual-fund NAVs need a suitable NAV source
+(e.g. official/public daily NAV data where available); FD, PPF, EPF,
+NPS, private equity, property and many other assets require manual or
+instrument-specific data. Separate actual current valuation from
+projected future value.
+
+4.12 CSV/XLSX import Users can import CSV/XLSX files but must review and
+confirm rows before they affect official records or projections.
+Workflow: 1. Upload and parse locally/backend securely. 2. Detect
+columns and suggest mappings. 3. Gemini may suggest categories, detect
+likely transfers, investments, repayments, refunds and recurring items,
+and explain uncertain classifications. 4. Deterministic code validates
+dates, amounts, duplicates, categories and transaction consistency. 5.
+User reviews, edits, excludes and confirms rows. 6. Only confirmed rows
+enter the canonical ledger and trigger recalculation. Transactions such
+as SIP/MF purchases, insurance premiums, loan principal repayments and
+internal transfers must be mapped to correct financial events, not
+automatically treated as consumption expenditure. Store import batch,
+source filename, mapping, row-level status, validation errors, duplicate
+candidate links, review timestamps and confirmation state. Avoid storing
+raw uploads longer than necessary. Do not silently import uncertain
+rows.
+
+4.13 Income sources No separate household-member management module is
+required. Users can create any number of income sources in the Income
+section. A partner’s contribution can be an additional source. Household
+income totals are computed from selected income sources and schedules.
+
+4.14 Trajectory views Support: - Household Trajectory: complete
+household financial projection. - Investment Trajectory: selected/all
+investment balances, contributions, returns, maturities, tax and
+withdrawals without full household cash-flow forecast. - Debt
+Trajectory: liabilities, interest, repayments, fees, outstanding
+balances and debt-free dates, excluding insurance. - Expenditure
+Trajectory: expense categories and growth assumptions over time. -
+Custom Trajectory: user chooses eligible financial categories and
+plus/minus components, a calculation type, time horizon and scenario.
+Show row-by-row contributions and how each investment/component produces
+the result. Include pre-tax and post-tax outputs where meaningful. -
+Goal Feasibility: goal allocation, funding progress, shortfalls,
+projected completion and trade-offs. - Scenario Comparison: compare
+independent scenario tabs. Users can select a future year/date, inspect
+month-by-month data, and export relevant results to CSV. For custom
+trajectory calculation types support: (a) Net worth = assets minus
+liabilities, with valuation and tax treatment appropriately identified.
+(b) Net cash flow = inflows minus outflows over the selected period. (c)
+Investment value = projected value of selected investments. (d) Custom
+net result = a user-defined combination of eligible components, with
+explicit signs and no category double-counting. Do not mix a
+stock/balance metric with a period flow metric without a clear
+definition. Clearly state what the final number represents. Before a
+trajectory calculation, validate required fields specific to that
+trajectory. Show missing-field checklist, why each field matters, direct
+links to edit, and whether a disclosed estimate can be used. Do not
+demand unrelated fields. Mark output as complete, estimated, or
+incomplete and explain limitations.
+
+4.15 Dashboard and navigation Use persistent sidebars on desktop and
+compact/collapsible navigation on smaller screens. The main dashboard is
+one comprehensive vertically scrolling financial command center. It must
+not hide major metrics merely because there are many; organize sections
+logically and provide jump navigation. Suggested order: 1. Overall
+financial summary: net worth, total assets, liabilities, recent changes.
+2. Cash flow: income, expenditure, savings, upcoming obligations and
+available surplus. 3. Goals: priority, progress, deadlines, shortfalls,
+feasibility. 4. Emergency fund: target, accessible reserves, shortfall,
+completion. 5. Investments: holdings, valuation freshness, performance
+and returns. 6. Debt/liabilities: outstanding balance, EMI, interest,
+payoff. 7. Insurance: coverage, premiums, renewals, claims/maturity
+events and gaps. 8. Tax overview: estimated liabilities, assumptions,
+pre/post-tax projections. 9. Future financial trajectory. 10. Scenario
+comparison. 11. Alerts/upcoming events. Use module-specific detail pages
+for deeper records and charts. Avoid duplicated assets, liabilities or
+flows across sections. Sidebar item “Financial Outlook” contains
+Household Trajectory, Investment Trajectory, Debt Trajectory,
+Expenditure Trajectory, Custom Trajectory, Goal Feasibility and Scenario
+Comparison.
+
+4.16 AI capabilities and boundaries Gemini must consider the user’s
+complete relevant financial picture—not isolated modules—when analysing
+risk capacity or suggesting actions. Its context should include all
+available relevant information from profile, income, expenditure, goals,
+assets, investments, liabilities, insurance, emergency reserves, tax
+configuration, scenarios, dated events, and data quality/freshness. AI
+responsibilities: - Explain projections and trade-offs in understandable
+language. - Diagnose why goals are infeasible and identify contributing
+constraints. - Suggest actionable changes to income, spending,
+contribution schedules, deadlines, goal targets, debt repayment,
+liquidity and scenarios. - Compare scenarios using deterministic engine
+results. - Analyse household risk capacity using age/life stage,
+dependants, parents, existing/planned children, household income
+reliability, expenses, debts, emergency reserves, insurance, liquidity,
+goal priorities and adverse-scenario sensitivity. - Optionally research
+current Indian tax/financial rules and market context only when the user
+enables external research. - Help classify CSV/XLSX transactions, but
+never auto-confirm. - Identify missing/conflicting/stale data and ask
+for clarification where necessary. AI must not: - Authoritatively
+calculate returns, taxes, balances, debt schedules or goal feasibility
+itself. - Invent data, assume future children/dependants as certain,
+silently change records, or fabricate sources. - Treat risk tolerance as
+risk capacity. - Recommend higher risk solely to make a goal
+mathematically feasible. - Promise returns or guarantee a financial
+outcome. - Make changes to records without user confirmation. - Ignore
+higher-priority goals, essential expenses, required debt payments, or
+scenario boundaries. The AI should receive a structured,
+privacy-minimized snapshot rather than raw unnecessary personal data.
+All recommendations must be grounded in current engine outputs, include
+assumptions and explain trade-offs. Research-enabled mode is separate
+from permission to use the user’s profile data.
+
+4.17 Essential expense and obligation priority Default cash allocation
+hierarchy: 1. Essential household expenses (housing, food, utilities,
+essential transport, healthcare, etc.). 2. Legally/contractually
+required payments (minimum debt repayments, statutory dues, other
+unavoidable obligations). 3. Emergency-fund contributions per user’s
+plan, considering immediate liquidity and mandatory obligations. 4.
+Goals, strictly in the user’s ordered priority sequence. 5. Optional
+spending and additional debt prepayments, optimized against preferences
+and consequences. Handle overdue obligations, penalties, liquidity and
+user-configured exceptions transparently. This is a planning hierarchy,
+not a claim that every obligation has identical legal priority.
+
+4.18 Debt Preserve detailed liability model from the reference PDF. It
+covers home, vehicle, personal, education, credit card, BNPL/consumer,
+business, gold, loan against assets, family/friend loans, tax/statutory
+dues and other payables. Track appropriate fields such as lender,
+sanctioned/disbursed amount, outstanding principal, interest rate,
+fixed/floating type, EMI, tenure, next due date, fees, prepayment rules,
+collateral and tax implications. Use quick entry for current balance/EMI
+with progressive completion of details. Clearly mark limited projections
+when interest rate, tenure or payment schedule is missing. Support
+repayment strategy comparisons: - Avalanche: highest effective interest
+cost first. - Snowball: smallest outstanding balance first. Respect
+required minimum payments, fees, promotional rates, prepayment penalties
+and secured obligations. Compare interest cost, payoff dates and goal
+impact. Suggestions are not actual payment changes.
+
+4.19 Insurance Preserve the reference PDF model including policies,
+insured members/assets, coverage, premiums, payments, claims, nominees,
+renewals, policy events, common policy fields and relevant insurance
+types. Treat insurance as a full planning module: premiums, renewals,
+maturity/payout events, employer-provided cover, coverage-gap detection,
+expiring cover and user-editable coverage-needs estimates based on
+income, liabilities, dependants and goals. Explain assumptions; don’t
+present coverage estimates as definitive professional advice. Include
+premium cash flows in household projections.
+
+======================================================================
+5. DATABASE SCHEMA — REQUIRED STARTING POINT
+======================================================================
+
+Inspect the attached reference PDF before finalizing the schema. The
+following is a major schema blueprint, not permission to ignore useful
+fields in the PDF. Produce complete tables with field names, types,
+nullability, defaults, indexes, unique constraints, foreign keys,
+relationships, enum values and rationale. Use appropriate
+decimal/numeric types for money and rates; never use binary floating
+point for stored currency. Include created_at, updated_at, ownership,
+provenance and soft-delete/audit strategy where relevant. Do not put
+every field in one enormous table. Use normalized related tables for
+extensible financial instruments.
+
+5.1 Identity and preferences - users: id, email/identity subject, auth
+provider, status, created_at, updated_at, last_login_at. -
+user_preferences: user_id, base_currency (INR default), timezone,
+locale, date/number formats, dashboard preferences, default projection
+horizon, privacy/research preferences. - household_profiles: id,
+user_id, date_of_birth nullable, approximate_age nullable,
+age_reference_date nullable, profile_completeness, created_at,
+updated_at. - household_commitments: id, user_id, commitment_type
+(parent_support, child, planned_child, other_dependant, family_event),
+status/uncertainty, count, relationship_category, start_date,
+expected_date, end_date/review_date, expected_amount, amount_frequency,
+inflation/growth assumption, notes, provenance, last_confirmed_at. Avoid
+storing unnecessary identifying details. - household_profile_answers:
+user_id, question_key, answer_value/enum, uncertainty/declined status,
+effective_date, provenance, updated_at. Use only if justified; don’t
+duplicate normalized child/commitment records. -
+household_risk_assessments: id, user_id, scenario_id nullable,
+assessed_at, engine_version, input_snapshot_id, quantitative indicators
+JSON or normalized results, qualitative findings,
+confidence/limitations, explanation. Preserve transparency; don’t store
+an opaque unexplained score only.
+
+5.2 Income and expenditure - income_sources: id, user_id, name,
+source_type, amount, currency, frequency, start_date, end_date nullable,
+variable/reliability classification, include_in_household_projection,
+source/provenance, notes. - income_growth_schedules: id,
+income_source_id, effective_date, change_type (fixed_amount/percentage),
+value, frequency, end_date nullable. - expense_categories: id, user_id
+nullable for system defaults, name, category_group,
+essential/discretionary classification, default inclusion flags. -
+expense_schedules: id, user_id, category_id, description, amount,
+currency, frequency, start_date, end_date, payment_day, essential flag,
+growth_mode, source/provenance. - expense_growth_schedules: id,
+expense_schedule_id, effective_date, change_type, value. -
+cash_flow_events: id, user_id, scenario_id nullable, event_type, amount,
+currency, event_date, recurrence, related_entity_type/id, status,
+tax_treatment_ref, notes, source/provenance. Do not use generic
+polymorphic references without integrity strategy; propose concrete FKs
+or an event-subject mapping table. - transactions: id, user_id,
+account_label (manual label only, not a connected account),
+transaction_date, posted_date nullable, amount signed or debit/credit
+with one consistent convention, currency, description,
+merchant/counterparty optional, category_id, transaction_type,
+transfer_group_id, related_instrument_id nullable, import_row_id
+nullable, confirmation status, source, external_reference optional,
+duplicate fingerprint, notes. - transaction_splits: id, transaction_id,
+category_id, amount, related_entity type/reference, split purpose;
+enforce sum-to-transaction consistency. - transfers: id, user_id,
+transfer date, source/destination transaction IDs, amount, currency,
+purpose; ensure transfers do not count as household income or
+consumption twice. - recurring_transactions (optional if needed):
+schedule, frequency, expected amount and related module; ensure actual
+ledger entries do not double-count forecast entries.
+
+5.3 Goals - financial_goals: id, user_id, name, reason, category,
+original_target_amount, currency, goal_amount_basis
+(today_money/future_nominal), deadline, target_inflation_rate default
+0.05, inflation_method, calculated_inflated_amount,
+selected_target_amount, selected_target_basis, priority_tier enum,
+priority_order integer, goal_status, linked_goal_asset/investment refs
+where applicable, notes. - goal_funding_allocations: id, user_id,
+goal_id, date/period, source_asset/investment/cash-flow reference,
+allocated_amount, allocation status; ensure allocations do not exceed
+available source value and prevent reuse. - goal_contributions: id,
+goal_id, contribution schedule/actual contribution, amount, date,
+source. - goal_projection_results: id, calculation_run_id, goal_id,
+projected_funding, shortfall, feasibility classification,
+projected_completion_date, reasons/constraints. Enforce uniqueness of
+priority_order within a tier for each user where appropriate. Store
+computed results separately from editable inputs.
+
+5.4 Assets and investments - asset_records: id, user_id, asset_type,
+name, currency, acquisition_date, acquisition_cost,
+current_manual_value, valuation_date, liquidity_class, sale_willingness
+(yes/no/maybe), residence_flag, secured_debt_reference,
+estimated_sale_cost, notes, provenance. - investment_instruments: id,
+instrument_type, name, canonical_identifier (ISIN/scheme
+code/ticker/etc), exchange, currency, issuer/fund house, instrument
+metadata JSON only for genuinely variable attributes; avoid using JSON
+instead of relational fields for core data. - investment_holdings: id,
+user_id, instrument_id, quantity/units, cost_basis, acquisition date or
+lot relation, current manual valuation override, valuation source,
+valuation timestamp, account/folio label, goal link nullable,
+liquidity/lock-in metadata. - investment_lots: id, holding_id,
+acquisition_date, quantity/units, purchase_price, charges, cost_basis,
+source transaction; needed for capital gains and holding periods. -
+investment_transactions: id, user_id, holding_id, transaction_type
+(buy/sell/switch/dividend/reinvest/distribution/split/corporate
+action/etc), trade/transaction date, quantity, price, fees, taxes,
+currency, FX rate, source transaction, notes. - market_price_snapshots:
+id, instrument_id, price, currency, market_timestamp, retrieved_at,
+provider, stale/status, raw reference/metadata, unique/provider keys. -
+market_data_cache metadata / provider health table as needed. -
+investment_return_assumptions: id, scenario_id, holding_id or
+instrument_id, annual_rate, effective_start_date, effective_end_date,
+compounding/day-count convention, assumption source, notes. Support
+multiple time ranges; validate no unintended overlapping ranges and
+define precedence. - investment_contribution_schedules: id, holding_id,
+contribution_type (SIP/recurring/manual planned), amount, frequency,
+start_date, end_date, affordability status, schedule metadata. -
+sip_step_up_schedules: id, contribution_schedule_id, effective_date,
+new_amount or change percentage, frequency, notes. -
+investment_distributions: id, holding_id, distribution type, ex-date,
+payable date, gross amount, tax/withholding, reinvested flag. -
+debt_instruments should not be forced into equity investment tables if
+instrument-specific fields differ. Provide specialized tables for MF
+scheme identifiers/NAV, equity exchange data, fixed deposits, recurring
+deposits, PPF, EPF, VPF, NPS, bonds, SGB, post-office schemes,
+REIT/InvIT, ESOP/RSU, private equity, property and gold. Reuse shared
+instrument/holding structures where sensible, and explain trade-offs.
+
+5.5 Debt and liabilities - liabilities: id, user_id, liability_type,
+lender/payee, account_label, original/sanctioned_amount,
+disbursed_amount, outstanding_principal, currency, interest_rate,
+rate_type (fixed/floating/unknown), effective_rate_date,
+EMI/payment_amount, payment_frequency, tenure_months, start_date,
+repayment_start_date, next_due_date, maturity/end_date, minimum_due,
+credit_limit, collateral, fees, prepayment_rules, tax metadata,
+quick_entry_flag, completeness_status, provenance. -
+liability_rate_periods: id, liability_id, effective_start_date,
+effective_end_date, annual_rate, rate_type, source. -
+liability_repayment_schedules: id, liability_id, due_date,
+scheduled_amount, principal_component nullable, interest_component
+nullable, fees, minimum_due, status. - liability_transactions: id,
+liability_id, date, type (payment/principal
+repayment/interest/fee/penalty/prepayment/drawdown), amount,
+principal_delta, interest_delta, source transaction. -
+debt_projection_results: calculation_run_id, liability_id, period,
+opening balance, interest, principal paid, fees, closing balance, payoff
+date/savings summary. - Preserve detailed fields from reference PDF by
+liability type (home, vehicle, personal, education, credit card, BNPL,
+business, gold loan, loan against assets, family/friend loan,
+tax/statutory dues, other payables). Use subtype tables or structured
+extension tables for unique fields such as collateral, moratorium,
+credit utilization, pledge details, LTV, etc.
+
+5.6 Emergency fund - emergency_fund_settings: id, user_id, target_months
+default 12, manual_target_amount nullable, baseline_category
+selection/config, contribution schedule, target methodology,
+updated_at. - emergency_fund_allocations: id, user_id,
+asset/holding/cash reference, allocated_amount, accessibility_class,
+withdrawal_cost, settlement_days, restricted_until, scenario treatment.
+Prevent allocations from exceeding available balance and prevent the
+same allocation being used to fund goals simultaneously.
+
+5.7 Insurance Preserve the reference PDF’s separate concepts: -
+insurance_policies: policy identity, insurer, policy number
+(protect/encrypt as appropriate), policy type/subcategory, UIN,
+issue/commencement/expiry dates, policy term, premium-paying term,
+status, renewal type/date, grace period, employer-provided/group flags,
+policyholder relationship, source/audit fields. - insured_members:
+policy/member relationship, relationship, optional minimal demographic
+fields, coverage status. Minimize health/sensitive data and require user
+consent where relevant. - insured_assets: asset/policy relationship and
+insured asset details. - coverage_details: base cover, riders/add-ons,
+limits, deductibles, co-pay, waiting periods, exclusions, coverage
+start/end. - premium_schedules: amount, due date, frequency, tax, grace
+period, autopay flag as user-entered info only, status. -
+premium_payments: payment date, amount, mode, transaction reference,
+receipt metadata, status. - insurance_claims: incident date, claim type,
+requested/approved/paid amounts, status, settlement and documents
+metadata. - insurance_nominees: relationship, share, guardian/change
+history where needed; protect PII. - insurance_renewals: renewal quote,
+portability, no-claim bonus, IDV, renewal status. -
+insurance_policy_events: event type, due/expiry/KYC/claim/payout date,
+status and reminder data. - coverage_need_estimates: scenario/profile
+snapshot, coverage type, methodology version, inputs, estimated range,
+assumptions, explanation and limitations.
+
+5.8 Tax and rules - tax_rule_sets: id, jurisdiction,
+tax_year/financial_year, instrument/tax category, effective_start/end,
+source URL, publisher, retrieved_at, validation_status, version,
+notes. - tax_rules: id, rule_set_id, taxable event, base type,
+rate/threshold/holding period/slab parameters,
+deductions/exemptions/cess/surcharge metadata, formula/configuration
+representation, source and validation. - tax_lots: holding/asset lot,
+acquisition date, cost basis, quantity, charges and tax-relevant
+attributes. - tax_events: id, user_id, scenario_id, event date, taxable
+event type, related asset/holding/liability, gross proceeds/income, cost
+basis, taxable base, tax estimate, withholding/TDS, rule version, status
+and explanation. - tax_overrides: user_id, instrument/entity/rule,
+override value, effective dates, reason, created_at and audit history.
+Avoid embedding executable arbitrary code from external sources. Use a
+constrained, testable rule configuration or trusted implementation.
+
+5.9 Scenarios, projections and events - scenarios: id, user_id, name,
+description, base_scenario_id nullable, is_baseline, created_at,
+updated_at. - scenario_assumptions: id, scenario_id, assumption_type,
+target entity, effective date range, typed value, units,
+source/provenance, notes. Avoid opaque JSON for critical typed fields;
+use structured subtype tables where needed. - scenario_events: id,
+scenario_id, event_type, event_date, amount, currency, recurrence,
+duration, target entity, certainty (planned/possible/confirmed
+assumption), impact type, notes, created_at. - scenario_goal_overrides:
+id, scenario_id, goal_id, target/deadline/priority override, reason. -
+projection_runs/calculation_runs: id, user_id, scenario_id, start_date,
+end_date, time_step, base_snapshot_id, calculation_engine_version,
+tax_rule_version, market_snapshot references, status, started_at,
+completed_at, input_hash, warnings. - projection_period_results: id,
+calculation_run_id, period_start/end, opening cash, income, essential
+expenses, discretionary expenses, debt payments, premiums, investment
+contributions, investment value, asset value, liability value, tax, net
+cash flow, net worth, available goal funding, warnings. -
+projection_component_results: id, calculation_run_id, period, component
+type, component id, opening value, contributions/inflows,
+returns/interest, fees/tax, withdrawals/outflows, closing value, pre-tax
+value, post-tax value, source assumptions. This is important for
+row-level custom trajectory explanations. - trajectory_definitions: id,
+user_id, name, calculation_type
+(net_worth/net_cash_flow/investment_value/custom_net_result),
+configuration version, created_at. - trajectory_components: id,
+trajectory_id, component type/reference, sign (+/-), inclusion rule,
+display order, tax treatment choice, duplicate-group metadata. -
+scenario_comparison_runs: id, user_id, scenario IDs, comparison
+timestamp, calculation-run IDs. - input_snapshots: immutable
+serialized/versioned set of relevant inputs, with privacy controls and
+integrity hash.
+
+5.10 Import, audit, AI and research - import_batches: id, user_id, file
+name, file type, upload timestamp, parsing status, mapping config,
+confirmation status, expiry/delete timestamp. - import_rows: id,
+batch_id, row number, raw row restricted/short-lived storage, normalized
+fields, suggested category, AI confidence/reason, validation errors,
+duplicate candidate, user-edited values, status
+(pending/confirmed/excluded/error), linked transaction ID. -
+audit_events: id, user_id, actor type, action, entity type/id,
+timestamp, before/after references or diffs, reason, correlation ID. Do
+not log secrets or unnecessary sensitive data. - ai_analysis_runs: id,
+user_id, scenario_id, input_snapshot_id, model identifier,
+prompt/template version, requested task, result, cited data references,
+warnings, created_at. Avoid storing raw sensitive prompt context
+unnecessarily; retention should be explicit. - research_sources: id,
+URL, title, publisher, source type, retrieved_at, published_at,
+effective_start/end, jurisdiction, validation status, content hash and
+notes. - ai_recommendations: id, analysis_run_id, recommendation type,
+proposed action, relevant entities, rationale, estimated impact from
+engine run, assumptions, confidence/limitations, status
+(proposed/accepted/rejected), created_at. - notifications/reminders: id,
+user_id, event type, due date, status, delivery channel if implemented;
+no external integrations assumed. - documents/receipts metadata only if
+needed; secure storage, strict access, retention and deletion.
+
+The final specification must normalize this blueprint, eliminate
+redundant tables, define all FKs and uniqueness rules, specify indexes,
+explain transaction-ledger consistency, and include ER diagrams or
+Mermaid ER diagrams. The schema must be adapted to the actual chosen
+database/stack and reference PDF. Do not copy this list blindly if a
+better normalized structure is justified; explain any change.
+
+======================================================================
+6. CALCULATION ENGINE AND FORMULA SPECIFICATION
+======================================================================
+
+Define a deterministic, chronological projection engine. Use monthly
+periods as the primary default for household projections, but document
+date handling and allow year-level summaries. Event dates should be
+respected; do not treat all events as if they occur at year-end without
+disclosure.
+
+Specify: - Opening balances and period cash flows. - Income recurrence
+and growth. - Expense recurrence and growth. - Essential vs
+discretionary expenditure. - Loan amortization and rate changes. -
+Investment contribution and return timing. - SIP step-up effective
+dates. - Fees, distributions, withdrawals and taxes. - Asset sale dates,
+sale costs and secured debts. - Maturities, lock-ins and liquidity. -
+Emergency fund allocation and contribution. - Goal inflation and target
+selection. - Priority-ordered funding and goal carry-forward. - Tax
+event timing and post-tax reinvestment. - Scenario event processing and
+precedence. - Handling missing fields, incomplete histories, stale
+market data and negative cash flow. - Rounding, currency precision,
+annual-to-monthly rate conversion, compounding convention and day-count
+conventions. - Calculation reproducibility and versioning.
+
+Explicitly distinguish: - balance-sheet values (net worth, asset value,
+liability balance), - period flows (income, expenses, taxes paid,
+contributions), - returns (investment gains/interest), - transfers (not
+income/expense), - debt principal repayment (cash outflow and liability
+reduction, not consumption expense), - investment purchases (cash
+outflow and asset acquisition, not ordinary consumption), - insurance
+premiums (cash outflow and policy-related expense/cash flow), - asset
+sale proceeds (cash inflow and asset reduction; taxable gain is not
+necessarily total proceeds), - taxes (actual event-based liability/cash
+outflow, not universal end-of-projection deduction). Explain how each
+affects net worth and cash flow to prevent double-counting.
+
+Every formula needs a worked example and automated test cases for: -
+regular and irregular income, - expenditure growth and no growth, - goal
+inflation and target basis, - multiple goals in priority order, -
+insufficient funding and carry-forward, - scenario return changes, - SIP
+step-ups, - loan repayment and rate change, - avalanche vs snowball, -
+emergency-fund allocation, - sale of asset with fees/tax/secured loan, -
+taxable investment redemption, - imported transfer/repayment/investment
+classification, - missing data and stale market data, - family
+commitments and future-child uncertainty scenario, - pre-tax/post-tax
+trajectory, - no double-counting of cash/investment/debt movements.
+
+======================================================================
+7. API AND MODULE CONTRACTS
+======================================================================
+
+Define endpoints or equivalent server actions for: -
+authentication/profile/preferences, - household profile and
+commitments, - income/expense CRUD and schedules, - goals and
+priorities, - assets and investment holdings/transactions, - market-data
+refresh and snapshot status, - liabilities and repayment schedules, -
+insurance policies/coverage/premiums/events, - tax rules and user
+overrides, - import upload/parse/map/review/confirm/exclude, -
+scenarios/assumptions/events, - projection readiness validation, -
+calculation run creation/status/results, - trajectory
+definitions/results/CSV export, - scenario comparison, - AI
+analysis/recommendations/accept/reject, - research enablement and source
+records, - audit events and reminders. For each endpoint specify method,
+auth, input/output schema, validation, error codes, idempotency
+behavior, permissions and tests. Do not create connected-account
+endpoints.
+
+Use consistent pagination, filtering, sorting, error responses and input
+validation. Prevent a user from accessing another user’s records. Long
+calculations should have status and reproducible run IDs. Do not return
+stale results as if freshly calculated.
+
+======================================================================
+8. UX WORKFLOWS AND ACCEPTANCE CRITERIA
+======================================================================
+
+Describe step-by-step workflows for: 1. New user onboarding. 2.
+Household profile/life-context entry. 3. Adding income sources and
+optional growth schedules. 4. Adding expenditure categories and growth
+assumptions. 5. Adding goals, goal inflation, priority tier and order.
+6. Adding investments and return assumptions. 7. Creating SIPs and
+step-up schedules. 8. Adding liabilities with quick entry and
+progressive detail. 9. Adding insurance policies and premium schedules.
+10. Allocating emergency reserves. 11. Creating scenarios and dated
+events. 12. Importing CSV/XLSX and reviewing rows. 13.
+Enabling/disabling external research. 14. Running readiness validation
+for a trajectory. 15. Running Household, Investment, Debt, Expenditure
+and Custom Trajectories. 16. Reviewing pre-tax/post-tax results and
+component-level breakdowns. 17. Comparing scenarios. 18. Reviewing AI
+risk-capacity analysis and recommendations. 19. Accepting/rejecting a
+recommendation and recalculating. 20. Exporting CSV. 21. Handling market
+API failure and stale data. 22. Updating or deleting financial records
+and invalidating affected calculations.
+
+For each workflow define acceptance criteria and error/edge cases.
+Include clear loading, empty, error, stale-data, incomplete-data and
+success states. Make the interface accessible, responsive and coherent.
+
+======================================================================
+9. SECURITY, PRIVACY, AND RESPONSIBLE FINANCIAL AI
+======================================================================
+
+Specify: - Secure authentication and authorization. - Per-user row-level
+access or equivalent tenant isolation. - Encryption in transit and
+appropriate at-rest protection. - Secure handling of policy/account
+identifiers and uploaded statements. - Input validation and file-upload
+security (type, size, parsing, malware considerations appropriate to
+stack). - Secrets management; never expose API keys in frontend code. -
+Rate limiting and abuse protection for AI and market-data requests. -
+Data minimization in Gemini prompts; use structured summaries and avoid
+sending unnecessary identifiers. - User-controlled research mode,
+separate from access to financial profile context. - Consent and
+transparency around use of family/dependant information. - Data export
+and deletion behavior. - Audit trail for overrides, imports,
+recommendations accepted/rejected and changes to financial
+assumptions. - Prompt-injection resistance: treat imported text, files,
+market pages and external research as untrusted data, not
+instructions. - Source citations and effective dates for researched
+rules. - No unsupported guarantees or professional-advice claims. -
+Explain that AI recommendations are decision support; tax and insurance
+estimates can be incomplete. - No automatic transaction execution,
+payments, trading or account linking. - Avoid opaque risk scores. Show
+factors and reasoning.
+
+======================================================================
+10. TEST STRATEGY
+======================================================================
+
+Specify unit, integration, API, UI and end-to-end tests. Prioritize
+financial correctness and invariants: - Currency values use decimal
+arithmetic. - Assets and liabilities are not double-counted. - Transfers
+are not income/expenses. - Investment purchases are not consumption
+expenses. - Loan principal repayments reduce debt and cash, but are not
+ordinary consumption. - Scenario changes do not mutate other
+scenarios. - Confirmed imports only affect official projections. -
+Priority allocation does not fund lower goals before higher goals under
+the agreed rules. - Asset allocations cannot exceed available value or
+be reused. - Tax calculation references the rule version and effective
+date. - Missing data is disclosed. - Market data freshness is visible. -
+AI cannot override deterministic engine results. - All projections are
+reproducible from saved inputs and versions. - User isolation prevents
+cross-user data access. - Planned future family events remain uncertain
+unless selected as assumptions. - Risk capacity considers whole
+financial context and adverse scenarios. Provide test data fixtures and
+expected outputs, not only test names.
+
+======================================================================
+11. IMPLEMENTATION PLAN FOR A 30-HOUR HACKATHON
+======================================================================
+
+The specification must distinguish: A. Full product target architecture
+and data model. B. Minimum viable hackathon implementation. C. Clearly
+labelled post-hackathon extensions.
+
+Do not pretend every detailed financial feature can be safely
+implemented in 30 hours. Prioritize a coherent end-to-end demo of the
+core problem: users enter a realistic financial profile,
+income/expenses, assets/liabilities and prioritized goals; create
+multiple scenarios; run deterministic projections; see which goals are
+feasible or delayed; understand why; test changes; and get Gemini
+explanations grounded in engine results.
+
+Recommend a realistic order: 1. Inspect existing repository and preserve
+working stack. 2. Define shared typed financial models and schema. 3.
+Implement deterministic projection core and tests before AI polish. 4.
+Implement goals/priorities/goal inflation. 5. Implement essential cash
+flow and debt obligations. 6. Implement scenario tabs and dated
+assumptions/events. 7. Implement dashboard and Financial Outlook
+trajectories. 8. Implement Gemini context assembly and constrained
+recommendation flow. 9. Implement manual entry and a basic CSV
+import-review workflow. 10. Add investment/market-data and tax features
+only to the extent reliable within time; clearly label mock/limited
+integrations if used. 11. Add tests, error states, seed/demo data and
+run instructions. 12. Validate the demo from a clean environment.
+
+Define a feature matrix with columns: feature, full-product expectation,
+hackathon MVP implementation, post-hackathon work, acceptance criterion,
+risk/dependency. Never label mocked data as real.
+
+======================================================================
+12. REQUIRED FINAL DOCUMENT OUTPUT
+======================================================================
+
+Produce one comprehensive implementation document, ideally at least 30
+pages if the details warrant it, with: - Title, version, date, scope and
+status. - Table of contents. - Executive summary and problem statement
+mapping. - Glossary and definitions. - Requirements register
+distinguishing agreed, source-derived, recommended and unresolved. -
+Product scope and feature inventory. - Architecture diagrams and data
+flows. - Module-by-module requirements. - Complete database schema with
+types, constraints, indexes and relationships. - ER diagram. - Financial
+calculation formulas and worked examples. - Scenario and goal-allocation
+algorithm/pseudocode. - Tax-rule engine design and source/effective-date
+model. - Market-data adapter design and freshness behavior. - CSV/XLSX
+import pipeline. - Household profile and risk-capacity framework. -
+Gemini prompt/context/orchestration design and strict boundaries. - API
+contracts. - UI workflows and navigation structure. - Security/privacy
+requirements. - Error handling and missing-data behavior. - Test plan
+and test fixtures. - Hackathon MVP vs full product vs post-hackathon
+matrix. - Implementation order, repository/file structure proposal,
+environment setup and run/test instructions. - Acceptance checklist and
+known limitations. - Appendix of source-derived fields from the
+reference PDF and any decisions/extensions.
+
+Diagrams may use Mermaid in source form. Use consistent naming across
+the document. Number requirements (e.g. FR-001, NFR-001), tables and
+diagrams. Include a decision log with status and rationale.
+
+Also create a compact companion “AI IDE execution prompt” that instructs
+the coding agent to inspect the existing repository, read the complete
+specification and reference PDF, plan before editing, implement
+incrementally, run tests, preserve working code, avoid fabricating
+results, and report changed files/tests/remaining issues. Do not tell
+the IDE to blindly rewrite the whole application in one pass.
+
+======================================================================
+13. QUALITY-CONTROL PASS BEFORE DELIVERY
+======================================================================
+
+Before delivering the final document: 1. Read every supplied source
+fully enough to understand its scope. 2. Check that no explicit user
+decision is contradicted. 3. Check that the reference PDF’s useful
+asset, debt, insurance and market-data fields are preserved or
+explicitly mapped. 4. Check for duplicate or conflicting definitions of
+cash flow, net worth, investment return, tax and debt repayment. 5.
+Check scenario isolation and reproducibility. 6. Check that the new
+household profile and risk-capacity requirement is integrated across the
+database, UI, AI context, financial engine, scenarios, tests and
+acceptance criteria. 7. Check that every custom trajectory states what
+its final number means and shows row-level components and
+pre-tax/post-tax values where applicable. 8. Check that required-field
+validation is trajectory-specific. 9. Check that market data and tax
+research are not confused with personal-account integrations. 10. Check
+that all AI recommendations are based on deterministic engine outputs
+and relevant whole-picture context. 11. Check that uncertainty about
+future children, parental support, income and medical/family commitments
+is represented as user-selected scenarios, not facts. 12. Check the MVP
+is realistic for 30 hours and clearly separates reliable implemented
+features from future scope. 13. Ensure no unsupported current tax/legal
+claim or fake API endpoint is included. 14. Deliver the final
+specification and companion IDE prompt as downloadable text/Markdown
+files if file generation is available. If the document is too large for
+one file format, also provide modular source sections that can be
+maintained independently.
+
+END OF MASTER PROMPT

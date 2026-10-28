@@ -1,0 +1,107 @@
+{
+  "id": "household",
+  "name": "Arjun and Meera (sample household)",
+  "description": "Fictional, synthetic household taken from the design. Starting inputs only: the engine decides every outcome. No interest, inflation or growth is assumed.",
+  "plan": {
+    "name": "Arjun and Meera",
+    "as_of": "2027-01",
+    "currency": "INR",
+    "income_streams": [
+      { "id": "arjun", "label": "Arjun's income", "monthly_net": "120000.00", "ends_after": null },
+      { "id": "meera", "label": "Meera's income", "monthly_net": "70000.00", "ends_after": null }
+    ],
+    "expenses": [
+      { "id": "food_home", "label": "Food, home and bills", "monthly": "55000.00" },
+      { "id": "school_travel", "label": "School and travel", "monthly": "20000.00" },
+      { "id": "loan", "label": "Loan payments", "monthly": "9000.00" },
+      { "id": "other", "label": "Other spending", "monthly": "15000.00" }
+    ],
+    "commitments": [],
+    "unassigned_savings": "0.00",
+    "goals": [
+      {
+        "id": "emergency",
+        "label": "Emergency money",
+        "type": "emergency_fund",
+        "target_amount_today": "594000.00",
+        "target_date": "2027-01",
+        "priority": 1,
+        "inflation_linked": false,
+        "inflation_rate_override": null,
+        "current_savings": "594000.00",
+        "flexibility": { "max_delay_months": 24, "min_target_pct": "0.80" }
+      },
+      {
+        "id": "home",
+        "label": "Home",
+        "type": "home",
+        "target_amount_today": "2400000.00",
+        "target_date": "2030-12",
+        "priority": 2,
+        "inflation_linked": false,
+        "inflation_rate_override": null,
+        "current_savings": "480000.00",
+        "flexibility": { "max_delay_months": 24, "min_target_pct": "0.80" }
+      },
+      {
+        "id": "education",
+        "label": "Children's education",
+        "type": "education",
+        "target_amount_today": "1800000.00",
+        "target_date": "2032-12",
+        "priority": 3,
+        "inflation_linked": false,
+        "inflation_rate_override": null,
+        "current_savings": "300000.00",
+        "flexibility": { "max_delay_months": 24, "min_target_pct": "0.80" }
+      },
+      {
+        "id": "old_age",
+        "label": "Old age",
+        "type": "retirement",
+        "target_amount_today": "5400000.00",
+        "target_date": "2057-12",
+        "priority": 4,
+        "inflation_linked": false,
+        "inflation_rate_override": null,
+        "current_savings": "0.00",
+        "flexibility": { "max_delay_months": 36, "min_target_pct": "0.80" }
+      }
+    ],
+    "assumptions": {
+      "general_inflation_annual": "0.000000",
+      "savings_return_annual": "0.000000",
+      "income_growth_annual": "0.000000",
+      "expense_growth_annual": "0.000000"
+    },
+    "fix_limits": { "extra_savings_cap_pct_of_income": "0.2000" }
+  },
+  "scenarios": [
+    {
+      "name": "No income for 6 months",
+      "events": [
+        {
+          "type": "income_change",
+          "stream_id": null,
+          "from_month": "2027-01",
+          "to_month": "2027-06",
+          "multiplier": "0"
+        }
+      ],
+      "priority_order": null,
+      "assumption_overrides": null,
+      "extra_monthly_savings": "0.00",
+      "goal_overrides": []
+    },
+    {
+      "name": "Sudden big expense",
+      "events": [
+        { "type": "one_time_expense", "month": "2027-01", "amount": "360000.00", "label": "Home repair" }
+      ],
+      "priority_order": null,
+      "assumption_overrides": null,
+      "extra_monthly_savings": "0.00",
+      "goal_overrides": []
+    }
+  ]
+}

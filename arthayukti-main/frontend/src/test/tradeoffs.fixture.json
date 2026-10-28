@@ -1,0 +1,113 @@
+{
+  "baseline": {
+    "goals_total": 3,
+    "on_track": 2,
+    "delayed": 1,
+    "not_achievable": 0,
+    "plan_feasible": false,
+    "uncovered_deficit_months": [],
+    "overcommitment_ratio": "1.6389",
+    "total_shortfall_today": "150000.00"
+  },
+  "rows": [
+    {
+      "prioritised_goal_id": "emergency",
+      "priority_order": [
+        "emergency",
+        "education",
+        "home"
+      ],
+      "outcomes": [
+        {
+          "goal_id": "emergency",
+          "status": "on_track",
+          "delay_months": null,
+          "shortfall_today": "0.00"
+        },
+        {
+          "goal_id": "education",
+          "status": "on_track",
+          "delay_months": null,
+          "shortfall_today": "0.00"
+        },
+        {
+          "goal_id": "home",
+          "status": "delayed",
+          "delay_months": 5,
+          "shortfall_today": "150000.00"
+        }
+      ],
+      "totals": {
+        "goals_missed": 1,
+        "total_delay_months": 5,
+        "total_shortfall_today": "150000.00"
+      }
+    },
+    {
+      "prioritised_goal_id": "education",
+      "priority_order": [
+        "education",
+        "emergency",
+        "home"
+      ],
+      "outcomes": [
+        {
+          "goal_id": "emergency",
+          "status": "on_track",
+          "delay_months": null,
+          "shortfall_today": "0.00"
+        },
+        {
+          "goal_id": "education",
+          "status": "on_track",
+          "delay_months": null,
+          "shortfall_today": "0.00"
+        },
+        {
+          "goal_id": "home",
+          "status": "delayed",
+          "delay_months": 5,
+          "shortfall_today": "150000.00"
+        }
+      ],
+      "totals": {
+        "goals_missed": 1,
+        "total_delay_months": 5,
+        "total_shortfall_today": "150000.00"
+      }
+    },
+    {
+      "prioritised_goal_id": "home",
+      "priority_order": [
+        "home",
+        "emergency",
+        "education"
+      ],
+      "outcomes": [
+        {
+          "goal_id": "emergency",
+          "status": "delayed",
+          "delay_months": 3,
+          "shortfall_today": "30000.00"
+        },
+        {
+          "goal_id": "education",
+          "status": "delayed",
+          "delay_months": 29,
+          "shortfall_today": "390000.00"
+        },
+        {
+          "goal_id": "home",
+          "status": "on_track",
+          "delay_months": null,
+          "shortfall_today": "0.00"
+        }
+      ],
+      "totals": {
+        "goals_missed": 2,
+        "total_delay_months": 32,
+        "total_shortfall_today": "420000.00"
+      }
+    }
+  ]
+}

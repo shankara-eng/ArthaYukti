@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300" role="img" aria-label="Advisor pipeline: records, snapshot, engine, Gemini, checks, you confirm">
+<defs><linearGradient id="fbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1022"/><stop offset="1" stop-color="#101a3a"/></linearGradient></defs>
+<rect width="1280" height="300" rx="22" fill="url(#fbg)"/>
+<line x1="220" y1="150" x2="260" y2="150" stroke="#5b7cff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-40" dur="2s" repeatCount="indefinite"/></line>
+<line x1="420" y1="150" x2="460" y2="150" stroke="#5b7cff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-40" dur="2s" repeatCount="indefinite"/></line>
+<line x1="620" y1="150" x2="660" y2="150" stroke="#5b7cff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-40" dur="2s" repeatCount="indefinite"/></line>
+<line x1="820" y1="150" x2="860" y2="150" stroke="#5b7cff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-40" dur="2s" repeatCount="indefinite"/></line>
+<line x1="1020" y1="150" x2="1060" y2="150" stroke="#5b7cff" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 6"><animate attributeName="stroke-dashoffset" values="0;-40" dur="2s" repeatCount="indefinite"/></line>
+<circle r="6" fill="#7dd3fc"><animateMotion dur="7s" repeatCount="indefinite" path="M 140 150 L 1140 150"/></circle>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="4.0s" begin="0.0s" repeatCount="indefinite"/>
+<rect x="60" y="98" width="160" height="104" rx="18" fill="#5eead4" fill-opacity="0.09" stroke="#5eead4" stroke-opacity="0.65"/>
+<circle cx="140" cy="98" r="15" fill="#5eead4"/><text x="140" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#0a1022" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">1</text>
+<text x="140" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Your records</text>
+<text x="140" y="160" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">income · spending · debts</text>
+<text x="140" y="178" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">insurance · holdings · goals</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="4.5s" begin="0.3s" repeatCount="indefinite"/>
+<rect x="260" y="98" width="160" height="104" rx="18" fill="#7dd3fc" fill-opacity="0.09" stroke="#7dd3fc" stroke-opacity="0.65"/>
+<circle cx="340" cy="98" r="15" fill="#7dd3fc"/><text x="340" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#0a1022" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">2</text>
+<text x="340" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Snapshot</text>
+<text x="340" y="160" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">minimised, hashed,</text>
+<text x="340" y="178" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">stale when records change</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="5.0s" begin="0.6s" repeatCount="indefinite"/>
+<rect x="460" y="98" width="160" height="104" rx="18" fill="#a5b4fc" fill-opacity="0.09" stroke="#a5b4fc" stroke-opacity="0.65"/>
+<circle cx="540" cy="98" r="15" fill="#a5b4fc"/><text x="540" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#0a1022" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">3</text>
+<text x="540" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Engine</text>
+<text x="540" y="160" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">every goal: saved date</text>
+<text x="540" y="178" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">and exactly +3 years</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="5.5s" begin="0.8999999999999999s" repeatCount="indefinite"/>
+<rect x="660" y="98" width="160" height="104" rx="18" fill="#c4b5fd" fill-opacity="0.09" stroke="#c4b5fd" stroke-opacity="0.65"/>
+<circle cx="740" cy="98" r="15" fill="#c4b5fd"/><text x="740" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#0a1022" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">4</text>
+<text x="740" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Gemini</text>
+<text x="740" y="160" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">proposes paths,</text>
+<text x="740" y="178" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">calls approved tools</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="6.0s" begin="1.2s" repeatCount="indefinite"/>
+<rect x="860" y="98" width="160" height="104" rx="18" fill="#fbbf24" fill-opacity="0.09" stroke="#fbbf24" stroke-opacity="0.65"/>
+<circle cx="940" cy="98" r="15" fill="#fbbf24"/><text x="940" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#0a1022" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">5</text>
+<text x="940" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Checks</text>
+<text x="940" y="160" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">invented ids and figures</text>
+<text x="940" y="178" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">removed and reported</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="6.5s" begin="1.5s" repeatCount="indefinite"/>
+<rect x="1060" y="98" width="160" height="104" rx="18" fill="#86efac" fill-opacity="0.09" stroke="#86efac" stroke-opacity="0.65"/>
+<circle cx="1140" cy="98" r="15" fill="#86efac"/><text x="1140" y="103" text-anchor="middle" font-size="15" font-weight="800" fill="#0a1022" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">6</text>
+<text x="1140" y="136" text-anchor="middle" font-size="17" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">You confirm</text>
+<text x="1140" y="160" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">exact edits shown;</text>
+<text x="1140" y="178" text-anchor="middle" font-size="12.5" fill="#a9b8e6" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">nothing changes before</text>
+</g>
+<text x="640" y="262" text-anchor="middle" font-size="15" fill="#8da0d8" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Calculation before explanation: Gemini never does arithmetic, and nothing changes without your confirmation.</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 360" width="1280" height="360" role="img" aria-label="Each goal compared at its saved date and three years later">
+<defs><linearGradient id="gbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1022"/><stop offset="1" stop-color="#0f1b3b"/></linearGradient>
+<linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#14b8a6"/><stop offset="1" stop-color="#5eead4"/></linearGradient>
+<linearGradient id="g2" x1="0" x2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#a5b4fc"/></linearGradient>
+<linearGradient id="g3" x1="0" x2="1"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#fcd34d"/></linearGradient></defs>
+<rect width="1280" height="360" rx="22" fill="url(#gbg)"/>
+<text x="48" y="52" font-size="24" font-weight="700" fill="#f1f5ff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Every goal, twice: at the saved date and exactly three years later</text>
+<text x="48" y="80" font-size="14" fill="#8da0d8" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Illustration of the goal review. Your saved date is never changed; the later date is an alternative to consider.</text>
+<text x="330" y="122" font-size="13" fill="#9db0e8" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">At the saved date</text>
+<text x="760" y="122" font-size="13" fill="#9db0e8" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Three years later</text>
+<text x="48" y="172" font-size="18" font-weight="600" fill="#e6ecff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Emergency money</text>
+<rect x="330" y="150" width="258" height="30" rx="15" fill="#ffffff" fill-opacity="0.07"/>
+<rect x="330" y="150" width="0" height="30" rx="15" fill="url(#g1)"><animate attributeName="width" values="0;247;247;0" keyTimes="0;0.35;0.85;1" dur="8s" begin="0.0s" repeatCount="indefinite"/></rect>
+<text x="604" y="171" font-size="15" font-weight="700" fill="#5eead4" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Achievable</text>
+<rect x="760" y="150" width="258" height="30" rx="15" fill="#ffffff" fill-opacity="0.07"/>
+<rect x="760" y="150" width="0" height="30" rx="15" fill="url(#g1)"><animate attributeName="width" values="0;258;258;0" keyTimes="0;0.35;0.85;1" dur="8s" begin="0.0s" repeatCount="indefinite"/></rect>
+<text x="1034" y="171" font-size="15" font-weight="700" fill="#5eead4" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Achievable</text>
+<text x="48" y="234" font-size="18" font-weight="600" fill="#e6ecff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Children's education</text>
+<rect x="330" y="212" width="258" height="30" rx="15" fill="#ffffff" fill-opacity="0.07"/>
+<rect x="330" y="212" width="0" height="30" rx="15" fill="url(#g2)"><animate attributeName="width" values="0;237;237;0" keyTimes="0;0.35;0.85;1" dur="8s" begin="0.4s" repeatCount="indefinite"/></rect>
+<text x="604" y="233" font-size="15" font-weight="700" fill="#5eead4" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Achievable</text>
+<rect x="760" y="212" width="258" height="30" rx="15" fill="#ffffff" fill-opacity="0.07"/>
+<rect x="760" y="212" width="0" height="30" rx="15" fill="url(#g2)"><animate attributeName="width" values="0;258;258;0" keyTimes="0;0.35;0.85;1" dur="8s" begin="0.4s" repeatCount="indefinite"/></rect>
+<text x="1034" y="233" font-size="15" font-weight="700" fill="#5eead4" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Achievable</text>
+<text x="48" y="296" font-size="18" font-weight="600" fill="#e6ecff" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Home</text>
+<rect x="330" y="274" width="258" height="30" rx="15" fill="#ffffff" fill-opacity="0.07"/>
+<rect x="330" y="274" width="0" height="30" rx="15" fill="url(#g3)"><animate attributeName="width" values="0;160;160;0" keyTimes="0;0.35;0.85;1" dur="8s" begin="0.8s" repeatCount="indefinite"/></rect>
+<text x="604" y="295" font-size="15" font-weight="700" fill="#fbbf24" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">At risk</text>
+<rect x="760" y="274" width="258" height="30" rx="15" fill="#ffffff" fill-opacity="0.07"/>
+<rect x="760" y="274" width="0" height="30" rx="15" fill="url(#g3)"><animate attributeName="width" values="0;258;258;0" keyTimes="0;0.35;0.85;1" dur="8s" begin="0.8s" repeatCount="indefinite"/></rect>
+<text x="1034" y="295" font-size="15" font-weight="700" fill="#5eead4" font-family="'Segoe UI',-apple-system,Helvetica,Arial,sans-serif">Achievable</text>
+</svg>

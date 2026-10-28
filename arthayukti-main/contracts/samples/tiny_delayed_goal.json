@@ -1,0 +1,40 @@
+{
+  "id": "tiny_delayed_goal",
+  "name": "Tiny delayed goal",
+  "description": "One goal, no rates. Hand-checkable: surplus 30,000, required level amount 40,000, so the goal completes in 2028-02, four months late. Used as golden test T3.",
+  "plan": {
+    "name": "Tiny example",
+    "as_of": "2026-11",
+    "currency": "INR",
+    "income_streams": [
+      { "id": "salary", "label": "Salary", "monthly_net": "90000.00", "ends_after": null }
+    ],
+    "expenses": [
+      { "id": "living", "label": "Living expenses", "monthly": "60000.00" }
+    ],
+    "commitments": [],
+    "unassigned_savings": "0.00",
+    "goals": [
+      {
+        "id": "home_deposit",
+        "label": "Home deposit",
+        "type": "home",
+        "target_amount_today": "600000.00",
+        "target_date": "2027-10",
+        "priority": 1,
+        "inflation_linked": false,
+        "inflation_rate_override": null,
+        "current_savings": "120000.00",
+        "flexibility": { "max_delay_months": 24, "min_target_pct": "0.80" }
+      }
+    ],
+    "assumptions": {
+      "general_inflation_annual": "0.000000",
+      "savings_return_annual": "0.000000",
+      "income_growth_annual": "0.000000",
+      "expense_growth_annual": "0.000000"
+    },
+    "fix_limits": { "extra_savings_cap_pct_of_income": "0.2000" }
+  },
+  "scenarios": []
+}

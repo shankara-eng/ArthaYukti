@@ -1,0 +1,34 @@
+# Render blueprint for the API. The frontend is deployed on Vercel (see docs/DEPLOYMENT.md).
+services:
+  - type: web
+    name: arthayukti-api
+    runtime: python
+    plan: free
+    branch: main
+    # Editable install keeps the code next to contracts/samples, which the API reads.
+    buildCommand: pip install -e backend
+    # The schema comes only from migrations, so they run before the server starts.
+    startCommand: cd backend && alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      # Anything other than development/test refuses to start without a strong SECRET_KEY.
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      # A managed PostgreSQL address (postgres:// or postgresql:// both work). Leave it empty to use
+      # SQLite, whose file on Render's free plan is erased on every restart.
+      - key: DATABASE_URL
+        sync: false
+      # Optional. Turns on AI wording in the advisor and Plan B; without it everything still works, calculated by the engine.
+      # Paste the key in Render's dashboard; it is never sent to the browser.
+      - key: GEMINI_API_KEY
+        sync: false
+      # The Vercel site's address, used in password-reset e-mails (no trailing slash).
+      - key: FRONTEND_BASE_URL
+        sync: false
+      # The Vercel site's address, for example https://arthayukti.vercel.app (no trailing slash).
+      - key: ALLOWED_ORIGINS
+        sync: false
